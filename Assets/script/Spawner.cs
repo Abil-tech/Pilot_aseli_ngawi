@@ -7,9 +7,17 @@ public class Spawner : MonoBehaviour
     [SerializeField] private float _yRange = 2f;
 
     private float _timer;
+    private bool _gameStarted = false;
+
+    public void StartGame()
+    {
+        _gameStarted = true;
+    }
 
     private void Update()
     {
+        if (!_gameStarted) return;
+
         _timer += Time.deltaTime;
 
         if (_timer > _spawnTime)
@@ -23,10 +31,13 @@ public class Spawner : MonoBehaviour
     {
         float yOffset = Random.Range(-_yRange, _yRange);
 
-        Instantiate(
+        GameObject pipe = Instantiate(
             _pipePrefab,
             new Vector2(transform.position.x, transform.position.y + yOffset),
             Quaternion.identity
         );
+
+        // langsung aktifkan movement
+        pipe.GetComponent<MovingObject>()?.StartGame();
     }
 }

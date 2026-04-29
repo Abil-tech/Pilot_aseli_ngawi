@@ -1,39 +1,40 @@
 using UnityEngine;
 using TMPro;
-using System;
 using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour
 {
-    [SerializeField] private GameObject _playButton;
-    [SerializeField] private TMP_Text _score;
+    [SerializeField] private TMP_Text _scoreText;
+    [SerializeField] private GameObject _restartButton;
+
+    private int score = 0;
 
     private void Awake()
     {
-         Debug.Log("UIManager AKTIF");
-        
-        movement_player.OnDeath += OnGameOver;
-        movement_player.OnScore += HandleScore;
+        movement_player.OnScore += AddScore;
+        movement_player.OnDeath += ShowRestart;
     }
 
     private void OnDestroy()
     {
-        movement_player.OnDeath -= OnGameOver;
-        movement_player.OnScore -= HandleScore;
+        movement_player.OnScore -= AddScore;
+        movement_player.OnDeath -= ShowRestart;
     }
 
-    private void HandleScore()
+    private void AddScore()
     {
-        _score.text = (int.Parse(_score.text) + 1).ToString();
+        score++;
+        _scoreText.text = score.ToString();
     }
 
-    private void OnGameOver()
+    private void ShowRestart()
     {
-        _playButton.SetActive(true);
+        _restartButton.SetActive(true);
     }
 
     public void RestartGame()
     {
-        SceneManager.LoadScene("StartScene");
+        Time.timeScale = 1f;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }

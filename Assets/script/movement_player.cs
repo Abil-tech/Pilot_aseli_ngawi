@@ -7,14 +7,39 @@ public class movement_player : MonoBehaviour
     [SerializeField] private float _force;
     [SerializeField] private float _yBound;
 
+    [SerializeField] private Spawner _spawner;
+    [SerializeField] private GameObject _startText;
+
+    private bool _isGameStarted = false;
+
     public static event Action OnDeath;
     public static event Action OnScore;
 
+    private void Start()
+    {
+        Time.timeScale = 1f;
+        _rigidbody.gravityScale = 0; // awal tidak jatuh
+    }
+
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0) && _rigidbody.position.y < _yBound)
+        if (Input.GetMouseButtonDown(0))
         {
-            Flap();
+            // 🚀 mulai game
+            if (!_isGameStarted)
+            {
+                _isGameStarted = true;
+                _rigidbody.gravityScale = 1;
+
+                _spawner.StartGame();
+                _startText.SetActive(false);
+            }
+
+            // 🐦 flap
+            if (_rigidbody.position.y < _yBound)
+            {
+                Flap();
+            }
         }
     }
 
@@ -30,19 +55,9 @@ public class movement_player : MonoBehaviour
         Time.timeScale = 0f;
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    // wrapper biar aman dari error event
+    public static void TriggerScore()
     {
-        Debug.Log("KENA TRIGGER");
-
-        if (collision.CompareTag("ScoreZone"))
-        {
-            Debug.Log("SCORE MASUK");
-            OnScore?.Invoke();
-        }   
-    }
-
-    private void Start()
-    {
-        Time.timeScale = 1f;
+        OnScore?.Invoke();
     }
 }
