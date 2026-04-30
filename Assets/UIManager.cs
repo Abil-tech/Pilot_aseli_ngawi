@@ -27,6 +27,12 @@ public class UIManager : MonoBehaviour
         _scoreText.text = score.ToString();
     }
 
+    public void BackToMenu()
+{
+    Time.timeScale = 1f;
+    SceneManager.LoadScene("MainMenu");
+}
+
     private void ShowRestart()
     {
         _restartButton.SetActive(true);
